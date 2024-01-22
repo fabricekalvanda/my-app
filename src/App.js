@@ -1,14 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import Navbar from "./components/Navbar";
 import Card from "./components/Cards";
 import UploadForm from "./components/UploadForm";
 import "./App.css";
 
-const photos = [
-  "https://picsum.photos/id/1001/200/200",
-];
+const photos = [];
+
+const initialState = {
+  items: photos,
+  count: photos.length,
+  inputs: { title: null, file: null, path: null },
+  isCollapsed: false
+}
+
+function reducer(state, action) {
+  switch(action.type) {
+    case 'setItem':
+      return {
+        ...state,
+        items: [action.payload.path, ...state.items]
+      }
+      default: return state
+  }
+}
 
 function App() {
+  const [state, dispatch] = useReducer(reducer, initialState)
   const [count, setCount] = useState();
   const [inputs, setInputs] = useState({ title: null, file: null, path: null });
   const [items, setItems] = useState(photos);
@@ -23,8 +40,15 @@ function App() {
   }
   const handleOnSubmit = (e) => {
     e.preventDefault()
-    setItems([inputs.path,...items])
+    //setItems([inputs.path,...items])
+    dispatch({ type: 'setItem', payload: {path: inputs}})
+    setInputs({ title: null, file: null, path: null })
+    collapse(false)
   }
+
+  useEffect(() => {
+    console.log(state)
+  }, [state.items])
 
   useEffect(() => {
     setCount(`you have ${items.length} image${items.length > 1 ? "s": " "}`)
@@ -39,6 +63,7 @@ function App() {
         </button>
         <div className="clearfix mb-4"></div>
         <UploadForm 
+          inputs={inputs}
           isVisible={isCollapsed}
           onChange={handleOnChange}
           onSubmit={handleOnSubmit} 
@@ -46,8 +71,8 @@ function App() {
         {count}
         <h1>Gallery</h1>
         <div className="row">
-          {items.map((photo) => (
-            <Card src={photo} />
+          {state.items.map((photo) => (
+            <Card src={photo.path}  />
           ))}
         </div>
       </div>
