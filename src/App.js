@@ -1,4 +1,5 @@
-import { useReducer, useMemo, useContext } from "react";
+import { useMemo, useContext, useEffect } from "react";
+import app from "./lib/firebase.config";
 import { Context } from "./Context";
 import Card from "./components/Cards";
 import Layout from "./components/Layout";
@@ -9,6 +10,9 @@ function App() {
   const count = useMemo(() => {
     return `you have ${state.items.length} image${state.items.length > 1 ? 's': ''}`
   }, [state.items])
+  useEffect(() => {
+    app()
+  }, [])
   return (
     <Layout>
         <h1 className="text-center">Gallery</h1>
