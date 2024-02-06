@@ -60,7 +60,7 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-light bg-light mb-5">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
-          Firestock
+          ⚡Firestock
         </a>
         <button
           className="navbar-toggler"
