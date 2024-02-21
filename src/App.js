@@ -1,18 +1,24 @@
 import { useMemo, useContext, useEffect } from "react";
-import app from "./lib/firebase.config";
-import { Context } from "./Context";
+import { Context } from "./context/FirestoreContext";
+import Firestore from "./handlers/firestore";
+import { useAuthContext } from "./context/AuthContext";
 import Card from "./components/Cards";
 import Layout from "./components/Layout";
 import "./App.css";
 
+
 function App() {
-  const { state } = useContext(Context)
+  const { state, read } = useContext(Context)
+  const { authenticate } = useAuthContext()
   const count = useMemo(() => {
     return `you have ${state.items.length} image${state.items.length > 1 ? 's': ''}`
   }, [state.items])
+
   useEffect(() => {
-    app()
-  }, [])
+    read()
+    authenticate()
+  },[])
+
   return (
     <Layout>
         <h1 className="text-center">Gallery</h1>
