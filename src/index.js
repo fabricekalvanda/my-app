@@ -21,7 +21,6 @@ root.render(
             <Route path="/" element={<App />}/>
             <Route path="/stocks" element={<Stocks />} />
           </Routes>
-          <App />
         </Router>
       </Provider>
     </AuthProvider>
