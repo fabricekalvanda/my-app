@@ -1,35 +1,47 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 const LogIn = () => {
-  const { login, currentUser } = useAuthContext()
-
+  const { login, currentUser } = useAuthContext();
 
   return (
-   !currentUser && <button type="button" className="btn btn-warning" onClick={login}>
-      Login
-    </button>
+    !currentUser && (
+      <button type="button" className="btn btn-warning" onClick={login}>
+        Login
+      </button>
+    )
   );
 };
 
 const LogOut = () => {
-  const { logout, currentUser } = useAuthContext()
-    return (
-      !!currentUser && <button type="button" className="btn btn-danger" onClick={logout}>
+  const { logout, currentUser } = useAuthContext();
+  return (
+    !!currentUser && (
+      <button type="button" className="btn btn-danger" onClick={logout}>
         Logout
       </button>
-    );
+    )
+  );
 };
 
-
 function Navigation() {
+  const { currentUser } = useAuthContext()
   return (
     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
       {/* remove all links except HOME */}
       <li className="nav-item">
-        <a className="nav-link active" aria-current="page" href="#">
+        <Link className="nav-link active" aria-current="page" to="/">
           Home
-        </a>
+        </Link>
+      </li>
+      <li className="nav-item">
+      {currentUser &&
+        <Link className="nav-link active" aria-current="page" to="/stockimages">
+          My Stocks Images
+        </Link>
+      }
+        
       </li>
     </ul>
   );
@@ -52,47 +64,58 @@ function SearchForm() {
 }
 
 function Dropdown() {
-  const { currentUser } = useAuthContext()
+  const { currentUser } = useAuthContext();
 
   const username = useMemo(() => {
-    return currentUser?.displayName || "Profile"
-  }, [currentUser])
+    return currentUser?.displayName || "Profile";
+  }, [currentUser]);
 
   const avatar = useMemo(() => {
-    return !!currentUser ?
-    <img className="avatar" src={currentUser?.photoURL} alt={currentUser?.displayName } width="34" height="34"/> : "Login"
-  },[currentUser])
+    return !!currentUser ? (
+      <img
+        className="avatar"
+        src={currentUser?.photoURL}
+        alt={currentUser?.displayName}
+        width="34"
+        height="34"
+      />
+    ) : (
+      "Login"
+    );
+  }, [currentUser]);
 
-    return (
-        <ul className="navbar-nav mb-2 mb-lg-0">
-        {" "}
-        {/* remove ms-auto */}
-        <li className="nav-item dropdown">
-          <a
-            className="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            {avatar}
-          </a>
-          <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+  return (
+    <ul className="navbar-nav mb-2 mb-lg-0">
+      {" "}
+      {/* remove ms-auto */}
+      <li className="nav-item dropdown">
+        <a
+          className="nav-link dropdown-toggle"
+          href="#"
+          id="navbarDropdown"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {avatar}
+        </a>
+        <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li>
+            <a className="dropdown-item text-center" href="#">
+              {username}
+            </a>
             <li>
-              <a className="dropdown-item text-center" href="#">
-                {username}
-              </a>
-              <li><hr className="dropdown divider"/></li>
+              <hr className="dropdown divider" />
             </li>
-            <div className="d-flex justify-content-center">
+          </li>
+          <div className="d-flex justify-content-center">
             <LogIn />
             <LogOut />
-            </div>
-          </ul>
-        </li>
-      </ul>
-    )
+          </div>
+        </ul>
+      </li>
+    </ul>
+  );
 }
 
 function Navbar() {
@@ -114,9 +137,9 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-           <Navigation />
-           <SearchForm />
-           <Dropdown /> 
+          <Navigation />
+          <SearchForm />
+          <Dropdown />
         </div>
       </div>
     </nav>
