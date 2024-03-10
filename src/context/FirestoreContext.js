@@ -1,10 +1,9 @@
-import { createContext, useContext, useReducer, useMemo } from "react";
+import { createContext, useContext, useMemo, useReducer } from "react";
 import Firestore from "../handlers/firestore";
 
 const { readDocs } = Firestore;
 
 export const Context = createContext();
-
 const photos = [];
 
 const initialState = {
@@ -32,16 +31,14 @@ function reducer(state, action) {
       return {
         ...state,
         items: [state.inputs, ...state.items],
+        placeholders: [state.inputs, ...state.items],
         count: state.items.length + 1,
         inputs: { title: null, file: null, path: null },
       };
     case "filterItems":
       return {
         ...state,
-        items: [state.inputs, ...state.items],
-        placeholders: [state.inputs, ...state.items],
-        count: state.items.length + 1,
-        inputs: { title: null, file: null, path: null },
+        items: action.payload.results,
       };
     case "setItems":
       return {
@@ -80,7 +77,6 @@ const Provider = ({ children }) => {
       const searchInput = input.toLowerCase();
       return name.indexOf(searchInput) > -1;
     });
-
     dispatch({ type: "filterItems", payload: { results } });
   };
 
@@ -92,7 +88,11 @@ const Provider = ({ children }) => {
       filterItems,
     };
   }, [state, dispatch, read, filterItems]);
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={value}>
+      {children}
+    </Context.Provider>
+  );
 };
 
 export const useFirestoreContext = () => {
